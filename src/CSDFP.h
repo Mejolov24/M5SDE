@@ -19,7 +19,7 @@
     #define ITEM_HEIGHT 16
 #endif
 #ifndef ITEM_WINDOW // maximum amount of files rendered
-    #define ITEM_WINDOW 5
+    #define ITEM_WINDOW 6
 #endif
 #include <stdint.h>
 #include <vector>
@@ -30,9 +30,9 @@ extern M5Canvas canvas;
 class CSDFP{
     private:
     typedef void (*SelectionCallback)(const char* path);
+    SelectionCallback _callback = nullptr;
     
     M5Canvas* _canvas;
-    SelectionCallback _callback = nullptr;
     uint8_t _width = 0;
     uint8_t _half_width = 0;
     uint8_t _height = 0;

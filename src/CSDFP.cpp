@@ -4,7 +4,7 @@ String CSDFP::_buildPath() {
     String path = "/";
     for (size_t i = 0; i < _pathStack.size(); i++) {
         path += _pathStack[i];
-        path += "/";
+        //path += "/";
     }
     return path;
 }
@@ -167,7 +167,7 @@ void CSDFP::process_input(Input input){
     case Input::down :
         _cursor_index++;
         // If we move off the bottom of the current window
-        if (_cursor_index > ITEM_WINDOW || (_cursor_offset + _cursor_index) >= files_amount) {
+        if (_cursor_index > ITEM_WINDOW or (_cursor_offset + _cursor_index) >= files_amount) {
             if ((_cursor_offset + ITEM_WINDOW + 1) < files_amount) {
                 // Scroll the window down
                 _cursor_index = ITEM_WINDOW;
@@ -180,9 +180,25 @@ void CSDFP::process_input(Input input){
         }
         break;
 
-    default:
+    case (Input::select):
+        {String current_selection = _dirList[_selection];
+        if(_isDirectory[_selection]){
+            _goToDir(current_selection);
+        }
+        else{
+            String string_path = _buildPath();
+            char char_path[string_path.length() + 1];
+            strcpy(char_path, string_path.c_str());
+            _callback(char_path);}
+        break;}
+    
+    case Input::back:
+        _goBack();
         break;
-    }
 
+    default:
+    break;
+    }
+    _selection = _cursor_offset + _cursor_index;
     _render();
 }
