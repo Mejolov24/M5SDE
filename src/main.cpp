@@ -1,3 +1,5 @@
+#include <SD.h>
+#include <M5Cardputer.h>
 #include <M5SDE.h>
 M5SDE sdex;
 using input = M5SDE::Input;
@@ -34,10 +36,19 @@ void setup(){
         canvas.pushSprite(0,0);
         delay(100);}
 }
+// custom theme setup:
+M5SDE::ExplorerSettings settings;
+settings.background_color = 0x211a;
+settings.border_color = 0x2c9f;
+settings.selection_color = 0x06e0;
+settings.item_height = 23;
+settings.item_window = 4;
+settings.font = &fonts::FreeSans12pt7b;
+
 
 
 sdex.begin(&canvas,OnSelection);
-sdex.open();
+sdex.open(&settings);
 }
 
 void loop(){

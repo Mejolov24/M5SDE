@@ -2,29 +2,28 @@
 #define M5SDE_H
 #include <stdint.h>
 #include <vector>
-#include <SD.h>
-#include <M5Cardputer.h>
+#include <Arduino.h>
+#include <M5GFX.h>
+#include <M5Unified.h>
 extern M5Canvas canvas;
-
 class M5SDE{
     public:
+    typedef void (*SelectionCallback)(const char* path);
     struct ExplorerSettings{
-        const uint16_t directory_color = YELLOW;
-        const uint16_t background_color = BLACK;
-        const uint16_t border_color = WHITE;
-        const uint16_t selection_color = BLUE;
-        const uint16_t text_color = WHITE;
-        const uint16_t item_height = 16;
-        const uint16_t item_window = 6;
+        uint16_t directory_color = YELLOW;
+        uint16_t background_color = BLACK;
+        uint16_t border_color = WHITE;
+        uint16_t selection_color = BLUE;
+        uint16_t text_color = WHITE;
+        uint16_t item_height = 16;
+        uint16_t item_window = 6;
+        const lgfx::v1::IFont* font = &fonts::Font2;
     };
 
     private:
-
-    typedef void (*SelectionCallback)(const char* path);
-    SelectionCallback _callback = nullptr;
-    ExplorerSettings* _settings;
-    
     M5Canvas* _canvas;
+    ExplorerSettings _settings;
+    SelectionCallback _callback = nullptr;
     uint8_t _width = 0;
     uint8_t _half_width = 0;
     uint8_t _height = 0;
