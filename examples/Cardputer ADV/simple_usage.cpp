@@ -1,10 +1,9 @@
 #include <SD.h>
 #include <M5Cardputer.h>
+M5Canvas canvas(&M5.Lcd);
 #include <M5SDE.h>
 M5SDE sdex;
 using input = M5SDE::Input;
-#include "M5Cardputer.h"
-M5Canvas canvas(&M5.Lcd);
 
 
 // --- SD PINS ---

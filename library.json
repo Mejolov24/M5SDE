@@ -2,7 +2,7 @@
   "name": "M5SDE",
   "version": "1.0.0",
   "description": "File explorer for M5 devices",
-  "keywords": "SD, File Explorer,Explorer",
+  "keywords": "sd, file explorer,explorer,m5stack",
   "repository":
   {
     "type": "git",
@@ -14,6 +14,15 @@
       "name": "Guillermo Beckers",
       "email": "beckers.rival@gmail.com",
       "maintainer": true
+    }
+  ],
+  "dependencies":
+  [
+    {
+        "owner": "M5Stack",
+        "name": "M5Unified",
+        "version": "^0.2.14",
+        "platforms": ["espressif32"]
     }
   ],
   "license": "MIT",
