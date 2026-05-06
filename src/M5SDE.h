@@ -1,12 +1,12 @@
-#ifndef SDFP
-#define SDFP
+#ifndef M5SDE_H
+#define M5SDE_H
 #include <stdint.h>
 #include <vector>
 #include <SD.h>
 #include <M5Cardputer.h>
 extern M5Canvas canvas;
 
-class CSDFP{
+class M5SDE{
     public:
     struct ExplorerSettings{
         const uint16_t directory_color = YELLOW;

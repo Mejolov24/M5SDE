@@ -1,6 +1,6 @@
-#include "CSDFP.h"
+#include "M5SDE.h"
 
-String CSDFP::_buildPath() {
+String M5SDE::_buildPath() {
     String path = "";
     uint16_t stack_size = _pathStack.size();
     if (stack_size == 0) return "/";
@@ -10,7 +10,7 @@ String CSDFP::_buildPath() {
     return path;
 }
 
-void CSDFP::_goToDir(String dir_name){
+void M5SDE::_goToDir(String dir_name){
     _cursor_offset = 0;
     _cursor_index = 0;
     _pathStack.push_back(dir_name);
@@ -18,7 +18,7 @@ void CSDFP::_goToDir(String dir_name){
     return;
 }
 
-void CSDFP::goToAbsoluteDir(const char* path) {
+void M5SDE::goToAbsoluteDir(const char* path) {
     _cursor_offset = 0;
     _cursor_index = 0;
     _pathStack.clear();
@@ -48,7 +48,7 @@ void CSDFP::goToAbsoluteDir(const char* path) {
     _updateDirectoryList();
 }
 
-void CSDFP::_goBack(){
+void M5SDE::_goBack(){
     if (_pathStack.size() == 0) return;
     _cursor_offset = 0;
     _cursor_index = 0;
@@ -57,7 +57,7 @@ void CSDFP::_goBack(){
     return;
 }
 
-void CSDFP::_updateDirectoryList() {
+void M5SDE::_updateDirectoryList() {
     String path = _buildPath();
     _dirList.clear();
     _isDirectory.clear();
@@ -84,7 +84,7 @@ void CSDFP::_updateDirectoryList() {
 }
 
 
-void CSDFP::_render(){
+void M5SDE::_render(){
     if (_canvas == nullptr) return;
     if (!_active) return;
     _canvas->fillScreen(_settings->background_color);
@@ -125,7 +125,7 @@ void CSDFP::_render(){
     return;
 }
 
-void CSDFP::begin(M5Canvas* targetCanvas, SelectionCallback callback){
+void M5SDE::begin(M5Canvas* targetCanvas, SelectionCallback callback){
     _canvas = targetCanvas;
     _callback = callback;
     _width = _canvas->width();
@@ -134,7 +134,7 @@ void CSDFP::begin(M5Canvas* targetCanvas, SelectionCallback callback){
     return;
 }
 
-void CSDFP::open(ExplorerSettings* settings){
+void M5SDE::open(ExplorerSettings* settings){
     if(settings == nullptr){
         static ExplorerSettings defaultSettings; 
         _settings = &defaultSettings;
@@ -148,14 +148,14 @@ void CSDFP::open(ExplorerSettings* settings){
     return;
 }
 
-void CSDFP::close(){
+void M5SDE::close(){
     if (!_active) return;
     _active = false;
 
     return;
 }
 
-void CSDFP::process_input(Input input){
+void M5SDE::process_input(Input input){
     if (!_active) return;
     uint16_t files_amount = (int16_t)_dirList.size();
     String callback_path = "";

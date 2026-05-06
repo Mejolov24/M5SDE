@@ -1,6 +1,6 @@
-#include <CSDFP.h>
-CSDFP sdex;
-using input = CSDFP::Input;
+#include <M5SDE.h>
+M5SDE sdex;
+using input = M5SDE::Input;
 #include "M5Cardputer.h"
 M5Canvas canvas(&M5.Lcd);
 
