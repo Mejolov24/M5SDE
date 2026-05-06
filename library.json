@@ -1,0 +1,23 @@
+{
+  "name": "M5SDE",
+  "version": "1.0.0",
+  "description": "File explorer for M5 devices",
+  "keywords": "SD, File Explorer,Explorer",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/Mejolov24/M5SDE.git"
+  },
+  "authors":
+  [
+    {
+      "name": "Guillermo Beckers",
+      "email": "beckers.rival@gmail.com",
+      "maintainer": true
+    }
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/Mejolov24/M5SDE",
+  "frameworks": "arduino",
+  "platforms": "espressif32"
+}
