@@ -1,26 +1,5 @@
 #ifndef SDFP
 #define SDFP
-#ifndef DIR_COLOR
-    #define DIR_COLOR YELLOW
-#endif
-#ifndef BG_COLOR
-    #define BG_COLOR BLACK
-#endif
-#ifndef BORDER_COLOR
-    #define BORDER_COLOR WHITE
-#endif
-#ifndef SELECTION_COLOR
-    #define SELECTION_COLOR GREEN
-#endif
-#ifndef TEXT_COLOR
-    #define TEXT_COLOR WHITE
-#endif
-#ifndef ITEM_HEIGHT
-    #define ITEM_HEIGHT 16
-#endif
-#ifndef ITEM_WINDOW // maximum amount of files rendered
-    #define ITEM_WINDOW 6
-#endif
 #include <stdint.h>
 #include <vector>
 #include <SD.h>
@@ -28,9 +7,22 @@
 extern M5Canvas canvas;
 
 class CSDFP{
+    public:
+    struct ExplorerSettings{
+        const uint16_t directory_color = YELLOW;
+        const uint16_t background_color = BLACK;
+        const uint16_t border_color = WHITE;
+        const uint16_t selection_color = BLUE;
+        const uint16_t text_color = WHITE;
+        const uint16_t item_height = 16;
+        const uint16_t item_window = 6;
+    };
+
     private:
+
     typedef void (*SelectionCallback)(const char* path);
     SelectionCallback _callback = nullptr;
+    ExplorerSettings* _settings;
     
     M5Canvas* _canvas;
     uint8_t _width = 0;
@@ -46,7 +38,6 @@ class CSDFP{
     bool _has_dirs = false;
     void _updateDirectoryList();
     void _goToDir(String dir_name);
-    void _goToAbsoluteDir(const char* path);
     void _goBack();
     void _render();
     String _buildPath();
@@ -63,8 +54,9 @@ class CSDFP{
     };
 
     void begin(M5Canvas* targetCanvas, SelectionCallback callback);
-    void open(const char* path); // opens the file picker
+    void open(ExplorerSettings* settings = nullptr); // opens the file picker
     void close(); // closes the file picker
+    void goToAbsoluteDir(const char* path);
     void process_input(Input input);
 };
 

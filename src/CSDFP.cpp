@@ -18,7 +18,7 @@ void CSDFP::_goToDir(String dir_name){
     return;
 }
 
-void CSDFP::_goToAbsoluteDir(const char* path) {
+void CSDFP::goToAbsoluteDir(const char* path) {
     _cursor_offset = 0;
     _cursor_index = 0;
     _pathStack.clear();
@@ -87,32 +87,35 @@ void CSDFP::_updateDirectoryList() {
 void CSDFP::_render(){
     if (_canvas == nullptr) return;
     if (!_active) return;
-    _canvas->fillScreen(BG_COLOR);
-    _canvas->drawRect(0, 0, _width, ITEM_HEIGHT, DIR_COLOR);
-    _canvas->setTextColor(TEXT_COLOR);
+    _canvas->fillScreen(_settings->background_color);
+    _canvas->drawRect(0, 0, _width, _settings->item_height, _settings->directory_color);
+    _canvas->setTextColor(_settings->text_color);
     _canvas->setTextDatum(TC_DATUM);
     _canvas->drawString(_buildPath(), _half_width , 0, &fonts::Font2);
     _canvas->setTextDatum(TL_DATUM);
 
     uint16_t files_amount = _dirList.size();
-    uint16_t draw_offset = ITEM_HEIGHT;
+    uint16_t draw_offset = _settings->item_height;
     uint16_t selection_cursor = _cursor_offset + _cursor_index;
-    uint8_t window_offset = _cursor_offset + ITEM_WINDOW; // until where we are seeing in the vector
-    //if (_cursor_offset > files_amount){window_offset = files_amount;}
+    uint8_t window_offset = _cursor_offset + _settings->item_window; // until where we are seeing in the vector
+    if (files_amount < window_offset){
+        window_offset = files_amount;
+        if (files_amount != 0) window_offset --;}
     
     
     for (uint16_t i = _cursor_offset; i <= window_offset; i++){
+        if (files_amount == 0) break;
         String current_item_name = _dirList[i];
         bool is_dir = _isDirectory[i];
 
         if(is_dir) current_item_name = "/" + current_item_name;
         if(i == selection_cursor and files_amount != 0){
-            _canvas->fillRect(0, draw_offset, _width, ITEM_HEIGHT, SELECTION_COLOR);
+            _canvas->fillRect(0, draw_offset, _width, _settings->item_height, _settings->selection_color);
         }
     
-        _canvas->drawRect(0, draw_offset, _width, ITEM_HEIGHT, BORDER_COLOR);
+        _canvas->drawRect(0, draw_offset, _width, _settings->item_height, _settings->border_color);
         _canvas->drawString(current_item_name, 0, draw_offset, &fonts::Font2);
-        draw_offset += ITEM_HEIGHT;
+        draw_offset += _settings->item_height;
 
     }
 
@@ -131,8 +134,11 @@ void CSDFP::begin(M5Canvas* targetCanvas, SelectionCallback callback){
     return;
 }
 
-void CSDFP::open(const char* path){
-    _goToAbsoluteDir(path);
+void CSDFP::open(ExplorerSettings* settings){
+    if(settings == nullptr){
+        static ExplorerSettings defaultSettings; 
+        _settings = &defaultSettings;
+    } else{_settings = settings;}
     if(!_has_dirs) _updateDirectoryList();
     if (!_has_dirs) return;
 
@@ -167,8 +173,8 @@ void CSDFP::process_input(Input input){
                 _cursor_offset--;
             } else {
                 // Wrap around to the very end of the list
-                _cursor_offset = (files_amount > ITEM_WINDOW) ? (files_amount - (ITEM_WINDOW + 1)) : 0;
-                _cursor_index = (files_amount > ITEM_WINDOW) ? ITEM_WINDOW : (files_amount - 1);
+                _cursor_offset = (files_amount > _settings->item_window) ? (files_amount - (_settings->item_window + 1)) : 0;
+                _cursor_index = (files_amount > _settings->item_window) ? _settings->item_window : (files_amount - 1);
             }
         }
         break;
@@ -177,10 +183,10 @@ void CSDFP::process_input(Input input){
         if (files_amount == 0) break;
         _cursor_index++;
         // If we move off the bottom of the current window
-        if (_cursor_index > ITEM_WINDOW or (_cursor_offset + _cursor_index) >= files_amount) {
-            if ((_cursor_offset + ITEM_WINDOW + 1) < files_amount) {
+        if (_cursor_index > _settings->item_window or (_cursor_offset + _cursor_index) >= files_amount) {
+            if ((_cursor_offset + _settings->item_window + 1) < files_amount) {
                 // Scroll the window down
-                _cursor_index = ITEM_WINDOW;
+                _cursor_index = _settings->item_window;
                 _cursor_offset++;
             } else {
                 // Wrap around to the very beginning
