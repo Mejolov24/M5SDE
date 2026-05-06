@@ -1,21 +1,26 @@
 #include "CSDFP.h"
 
 String CSDFP::_buildPath() {
-    String path = "/";
-    for (size_t i = 0; i < _pathStack.size(); i++) {
-        path += _pathStack[i];
-        //path += "/";
+    String path = "";
+    uint16_t stack_size = _pathStack.size();
+    if (stack_size == 0) return "/";
+    for (size_t i = 0; i < stack_size; i++) {
+        path += "/" + _pathStack[i];
     }
     return path;
 }
 
 void CSDFP::_goToDir(String dir_name){
+    _cursor_offset = 0;
+    _cursor_index = 0;
     _pathStack.push_back(dir_name);
     _updateDirectoryList();
     return;
 }
 
 void CSDFP::_goToAbsoluteDir(const char* path) {
+    _cursor_offset = 0;
+    _cursor_index = 0;
     _pathStack.clear();
 
     if (!path || path[0] == '\0') return;
@@ -44,6 +49,9 @@ void CSDFP::_goToAbsoluteDir(const char* path) {
 }
 
 void CSDFP::_goBack(){
+    if (_pathStack.size() == 0) return;
+    _cursor_offset = 0;
+    _cursor_index = 0;
     _pathStack.pop_back();
     _updateDirectoryList();
     return;
@@ -98,7 +106,7 @@ void CSDFP::_render(){
         bool is_dir = _isDirectory[i];
 
         if(is_dir) current_item_name = "/" + current_item_name;
-        if(i == selection_cursor){
+        if(i == selection_cursor and files_amount != 0){
             _canvas->fillRect(0, draw_offset, _width, ITEM_HEIGHT, SELECTION_COLOR);
         }
     
@@ -124,7 +132,6 @@ void CSDFP::begin(M5Canvas* targetCanvas, SelectionCallback callback){
 }
 
 void CSDFP::open(const char* path){
-    if (_active) return;
     _goToAbsoluteDir(path);
     if(!_has_dirs) _updateDirectoryList();
     if (!_has_dirs) return;
@@ -145,10 +152,12 @@ void CSDFP::close(){
 void CSDFP::process_input(Input input){
     if (!_active) return;
     uint16_t files_amount = (int16_t)_dirList.size();
+    String callback_path = "";
 
     switch (input)
     {
     case Input::up :
+        if (files_amount == 0) break;
         _cursor_index--;
         // If we move off the top of the current window
         if (_cursor_index < 0) {
@@ -165,6 +174,7 @@ void CSDFP::process_input(Input input){
         break;
 
     case Input::down :
+        if (files_amount == 0) break;
         _cursor_index++;
         // If we move off the bottom of the current window
         if (_cursor_index > ITEM_WINDOW or (_cursor_offset + _cursor_index) >= files_amount) {
@@ -182,14 +192,15 @@ void CSDFP::process_input(Input input){
 
     case (Input::select):
         {String current_selection = _dirList[_selection];
+        if (files_amount == 0) break;
+        if(!current_selection) break;
         if(_isDirectory[_selection]){
             _goToDir(current_selection);
         }
         else{
-            String string_path = _buildPath();
-            char char_path[string_path.length() + 1];
-            strcpy(char_path, string_path.c_str());
-            _callback(char_path);}
+            if (_pathStack.size() == 0){callback_path = "/" + current_selection;} // at root dir
+            else{callback_path = _buildPath() + "/" + current_selection;}
+            }
         break;}
     
     case Input::back:
@@ -201,4 +212,8 @@ void CSDFP::process_input(Input input){
     }
     _selection = _cursor_offset + _cursor_index;
     _render();
+    if (!_callback or callback_path.isEmpty()) return;
+    char char_path[callback_path.length() + 1];
+    strcpy(char_path, callback_path.c_str());
+    _callback(char_path);
 }

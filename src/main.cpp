@@ -13,19 +13,27 @@ M5Canvas canvas(&M5.Lcd);
 
 
 void OnSelection(const char* path){
-    canvas.drawString(String(path),0,0,&fonts::FreeMonoBold24pt7b); // print to screen the absolute path of selected option
+    canvas.clear();
+    canvas.drawString("Selected file :", 0,0,&fonts::Font4);
+    canvas.drawString(String(path),0,30,&fonts::Font0); // print to screen the absolute path of selected option
     canvas.pushSprite(0,0);
 }
 
 void setup(){
     auto cfg = M5.config();
     M5Cardputer.begin(cfg);
+    canvas.createSprite(240, 135);
+    bool sd_active = false;
     SPI.begin(SD_SPI_SCK_PIN, SD_SPI_MISO_PIN, SD_SPI_MOSI_PIN, SD_SPI_CS_PIN);
-    if (!SD.begin(SD_SPI_CS_PIN, SPI, 25000000)) {
-        Serial.println("SD failed!");
-        return;
-    }
-canvas.createSprite(240, 135);
+    while(!sd_active){
+    if (SD.begin(SD_SPI_CS_PIN, SPI, 25000000)) sd_active = true;
+    else{
+        canvas.setTextColor(RED);
+        canvas.drawString("SD FAIL",0,0,&fonts::FreeMonoBold24pt7b);
+        canvas.pushSprite(0,0);
+        delay(100);}
+}
+
 
 sdfp.begin(&canvas,OnSelection);
 sdfp.open("/");
