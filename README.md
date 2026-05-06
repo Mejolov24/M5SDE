@@ -1,7 +1,7 @@
 # M5SDE
 high-level SD card explorer for M5Stack devices.
 
-This library provides a ready-to-use UI for navigating SD card directories and selecting files
+[thumbnail](https://github.com/Mejolov24/M5SDE/blob/main/thumbnail.jpeg?raw=true)
 
 ## Roadmap
 Version 1.0.0 covers all current production requirements for my specific workflow. While I have designed a broader feature set, those updates will be worked on as the library gains traction.
