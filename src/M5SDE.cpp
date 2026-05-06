@@ -136,8 +136,9 @@ void M5SDE::begin(M5Canvas* targetCanvas, SelectionCallback callback){
 }
 
 void M5SDE::open(ExplorerSettings* settings){
-    if (settings == nullptr) {_settings = ExplorerSettings();}
-    else {_settings = *settings;}
+    if (settings == nullptr) {
+        if (!_had_settings) _settings = ExplorerSettings();}
+    else {_settings = *settings; _had_settings = true;}
     if(!_has_dirs) _updateDirectoryList();
     if (!_has_dirs) return;
 
@@ -148,9 +149,8 @@ void M5SDE::open(ExplorerSettings* settings){
 }
 
 void M5SDE::close(){
-    if (!_active) return;
+    _canvas->clear();
     _active = false;
-
     return;
 }
 

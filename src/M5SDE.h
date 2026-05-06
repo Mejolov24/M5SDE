@@ -8,7 +8,7 @@
 extern M5Canvas canvas;
 class M5SDE{
     public:
-    typedef void (*SelectionCallback)(const char* path);
+    typedef void (*SelectionCallback)(const char* path); // returns the absolute path of selected option
     struct ExplorerSettings{
         uint16_t directory_color = YELLOW;
         uint16_t background_color = BLACK;
@@ -33,6 +33,7 @@ class M5SDE{
     std::vector<String> _pathStack; // stores the current navigation path
     std::vector<String> _dirList;  // stores what the current dir has
     std::vector<bool> _isDirectory;   // parallel vector to remember if _dirList[i] is a folder
+    bool _had_settings = false; // set to true forever when settings defaults are overwritten
     bool _active = false;
     bool _has_dirs = false;
     void _updateDirectoryList();

@@ -14,10 +14,10 @@ M5Canvas canvas(&M5.Lcd);
 #define SD_SPI_CS_PIN   12
 
 
-void OnSelection(const char* path){
+void OnSelection(const char* path){// returns the absolute path of selected option
     canvas.clear();
     canvas.drawString("Selected file :", 0,0,&fonts::Font4);
-    canvas.drawString(String(path),0,30,&fonts::Font0); // print to screen the absolute path of selected option
+    canvas.drawString(String(path),0,30,&fonts::Font0);
     canvas.pushSprite(0,0);
 }
 
@@ -48,7 +48,8 @@ settings.font = &fonts::FreeSans12pt7b;
 
 
 sdex.begin(&canvas,OnSelection);
-sdex.open(&settings);
+//sdex.goToAbsoluteDir("MyDir"); // to start at a specific dir
+sdex.open(&settings); // if an argument is not providen, it will use defualts or latest config.
 }
 
 void loop(){
@@ -59,5 +60,14 @@ void loop(){
     if (M5Cardputer.Keyboard.isKeyPressed('.')){sdex.process_input(input::down);}
     if (keys.enter){sdex.process_input(input::select);}
     if (keys.del){sdex.process_input(input::back);}
+    
+    if (M5Cardputer.Keyboard.isKeyPressed('=')){sdex.open();}
+    if (M5Cardputer.Keyboard.isKeyPressed('-')){
+        sdex.close();
+        canvas.setTextColor(YELLOW);
+        canvas.drawString("Closed",0,0,&fonts::FreeMonoBold24pt7b);
+        canvas.pushSprite(0,0);
+    }
+
     }
 }
